@@ -166,28 +166,160 @@
     lesões cutâneas. Neste projeto, explorei até que ponto diferentes arquiteturas de
     redes neuronais conseguem aprender estes padrões e se uma CNN apresenta vantagens
     reais face a uma abordagem mais simples baseada num MLP.</p>
-<h3>Arquiteturas testadas</h3>
-<ul class="detail-list">
-<li>MLP: camada de input, 2 a 5 hidden layers (entre 512 e 1024 neurónios), camada de output — 8 experiências fazendo variar ativação, otimizador, learning rate e batch size</li>
-<li>CNN: 2 a 6 blocos convolucionais com Max Pooling e ativação ReLU, seguidos de flattening e 3 camadas fully connected com Dropout — 6 experiências fazendo variar profundidade, kernel size, otimizador e função de loss</li>
-</ul>
-<h3>Principais conclusões das experiências</h3>
-<ul class="detail-list">
-<li>MLP: Adam superou SGD de forma consistente; hidden layers de 512 neurónios deram melhores resultados que camadas maiores; ReLU superou Sigmoid</li>
-<li>CNN: aplicar Max Pooling após cada camada convolucional (em vez de a cada duas) melhorou a extração de features; redes mais profundas (6 camadas) não trouxeram melhoria e mostraram mais overfitting</li>
-<li>CrossEntropyLoss superou MultiMarginLoss em ambos os modelos</li>
-</ul>
-<h3>Resultados</h3>
-<ul class="detail-list">
-<li>Melhor MLP (Exp. 7 — 5×512 neurónios, Adam, CrossEntropy): accuracy de 70.7%, F1-Score de 71.4%</li>
-<li>Melhor CNN (Exp. 4 — 3 camadas convolucionais, RMSprop): accuracy de 69.9%, F1-Score de 70.7%</li>
-<li>Ambos os modelos atingiram ~99% de accuracy no treino mas só ~70% na validação — sinal de overfitting, mais acentuado na CNN, onde a loss de validação ultrapassa a de treino após 70 epochs</li>
-<li>As classes com mais amostras (melanocytic nevi, melanoma) foram sempre as mais bem classificadas; a CNN, apesar da arquitetura mais complexa, não superou o MLP — indicando que o desbalanceamento residual, mais do que a arquitetura, foi o fator limitante</li>
-</ul>
-<h3>Código</h3>
-<div class="notebook-embed">
-  <div class="notebook-label">📓 Código_projeto1.ipynb — MLP e CNN em PyTorch, DermaMNIST</div>
-  <iframe src="Dermatologia.html" class="notebook-frame" loading="lazy"></iframe>
+
+  <h3>Dados e preparação</h3>
+
+  <p>
+    Foi utilizado o dataset <strong>DermaMNIST</strong>, composto por 10.015 imagens
+    dermatológicas RGB de 28×28 píxeis, distribuídas por 7 classes de doenças
+    dermatológicas.
+  </p>
+
+  <p>
+    Um dos principais desafios foi o forte <strong>desbalanceamento das classes</strong>:
+    a classe maioritária representava cerca de 67% das imagens, enquanto a classe
+    minoritária representava apenas 1,14%.
+  </p>
+
+  <ul class="detail-list">
+    <li>
+      <strong>SMOTE:</strong> oversampling das classes minoritárias para aumentar a sua
+      representação no conjunto de treino.
+    </li>
+    <li>
+      <strong>Undersampling:</strong> redução da representação da classe maioritária.
+    </li>
+    <li>
+      <strong>Pesos na função de loss:</strong> atribuição de maior peso às classes
+      menos representadas, penalizando mais os erros nessas classes.
+    </li>
+  </ul>
+
+
+  <h3>Modelos testados</h3>
+
+  <p>
+    Foram desenvolvidas duas abordagens diferentes para perceber se a capacidade de
+    aprender características espaciais das imagens, proporcionada pelas convoluções,
+    se traduzia numa vantagem efetiva.
+  </p>
+
+  <ul class="detail-list">
+    <li>
+      <strong>MLP:</strong> entre 2 e 5 hidden layers, com 512 a 1024 neurónios,
+      variando ativação, otimizador, learning rate e batch size.
+    </li>
+    <li>
+      <strong>CNN:</strong> entre 2 e 6 blocos convolucionais com Max Pooling e ReLU,
+      seguidos de flattening e camadas fully connected com Dropout.
+    </li>
+  </ul>
+
+
+  <h3>Experimentação</h3>
+
+  <p>
+    Em vez de testar apenas uma configuração, foram realizadas várias experiências
+    para perceber que escolhas tinham maior impacto no desempenho dos modelos.
+  </p>
+
+  <ul class="detail-list">
+    <li>
+      <strong>MLP:</strong> 8 experiências, variando arquitetura, função de ativação,
+      otimizador, learning rate e batch size.
+    </li>
+    <li>
+      <strong>CNN:</strong> 6 experiências, variando profundidade, kernel size,
+      otimizador e função de loss.
+    </li>
+    <li>
+      <strong>Comparação:</strong> análise de Accuracy e F1-Score para avaliar o
+      desempenho dos modelos.
+    </li>
+  </ul>
+
+
+  <h3>O que aprendi com as experiências</h3>
+
+  <ul class="detail-list">
+    <li>
+      <strong>MLP:</strong> Adam apresentou resultados mais consistentes do que SGD,
+      enquanto ReLU superou Sigmoid e as hidden layers com 512 neurónios apresentaram
+      melhores resultados do que configurações maiores.
+    </li>
+    <li>
+      <strong>CNN:</strong> aplicar Max Pooling após cada camada convolucional melhorou
+      a extração de características, enquanto aumentar demasiado a profundidade da
+      rede não trouxe melhorias e aumentou o overfitting.
+    </li>
+    <li>
+      <strong>Função de loss:</strong> CrossEntropyLoss apresentou melhores resultados
+      do que MultiMarginLoss nos dois modelos.
+    </li>
+  </ul>
+
+
+  <h3>Resultados</h3>
+
+  <p>
+    Os melhores resultados dos dois modelos foram bastante próximos, permitindo
+    perceber que uma arquitetura mais complexa não garantiu, neste caso, um melhor
+    desempenho.
+  </p>
+
+  <ul class="detail-list">
+    <li>
+      <strong>Melhor MLP:</strong> 70,7% de Accuracy e 71,4% de F1-Score.
+    </li>
+    <li>
+      <strong>Melhor CNN:</strong> 69,9% de Accuracy e 70,7% de F1-Score.
+    </li>
+    <li>
+      Ambos os modelos atingiram cerca de 99% de Accuracy no treino, mas apenas cerca
+      de 70% na validação, evidenciando <strong>overfitting</strong>.
+    </li>
+    <li>
+      Na CNN, a divergência entre a loss de treino e validação tornou-se particularmente
+      evidente após cerca de 70 épocas.
+    </li>
+  </ul>
+
+
+  <div class="detail-media">
+    <img src="data:image/png;base64,..." alt="Curvas de loss e accuracy da CNN">
+  </div>
+
+  <div class="detail-media-cap">
+    Loss e accuracy da CNN — a divergência entre treino e validação evidencia overfitting.
+  </div>
+
+
+  <h3>Conclusão</h3>
+
+  <p>
+    O principal resultado deste projeto foi perceber que <strong>mais complexidade
+    arquitetural não significa necessariamente melhor desempenho</strong>. Apesar de
+    a CNN ser especificamente orientada para a análise de imagens, o MLP apresentou
+    um resultado ligeiramente superior neste conjunto de dados.
+  </p>
+
+  <p>
+    A análise das experiências mostrou também que o <strong>desbalanceamento dos
+    dados</strong> continuou a ser um desafio importante e que as escolhas de
+    arquitetura, otimização e função de loss tiveram um impacto significativo nos
+    resultados.
+  </p>
+
+
+  <h3>Código</h3>
+
+  <div class="notebook-embed">
+    <div class="notebook-label">
+      📓 Código_projeto1.ipynb — MLP e CNN em PyTorch, DermaMNIST
+    </div>
+    <iframe src="Dermatologia.html" class="notebook-frame" loading="lazy"></iframe>
+  </div>
+
 </div>
 
     </div>
