@@ -158,10 +158,10 @@
 
 <h3>Otimização de Processos: Deteção do estado de ocupação e tipo de produto:</h3>
 <ul class="detail-list">
-<li>8 experiências de classificação para ocupação, tipo de produto e categoria de produto em prateleira</li>
-<li>Pipelines assíncronos de classificação com modelos de linguagem visual (Azure OpenAI GPT-4.1 e Anthropic), incluindo rate limiting e lógica de retry para lidar com os limites das APIs</li>
-<li>Deteção e mitigação de erros de alucinação do modelo (falsos positivos de ocupação), com filtragem antes de propagar para as métricas finais</li>
-<li>Exploração de identificação de produto por similaridade de embeddings (MobileNetV2) face a imagens de catálogo, como alternativa à classificação direta por VLM</li>
+<li>Experiências do estado de ocupação com a área de interseção das bouding boxes e exploração de abordagens de VLM;
+<li>Tipo de produto, as imagens disponibilizadas não continham todos os produtos do continente, então utilizamos modelos de VLMs;</li>
+<li>Criação de um pipeline de tarefas de automatização de processos.</li>
+<li>Identifiação de limitações e mitigação de erros/alucinação do modelo (falsos positivos)</li>
 </ul>
 
       
