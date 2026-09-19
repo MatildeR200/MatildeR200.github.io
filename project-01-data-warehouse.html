@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Data Warehouse &amp; Business Intelligence do Mercado de IA — Matilde Reis</title>
+<script type="module" src="https://public.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📐</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -126,6 +127,19 @@
   .notebook-embed { margin: 18px 0 34px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
   .notebook-label { padding: 10px 16px; background: var(--paper-alt); font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-soft); border-bottom: 1px solid var(--line); }
   .notebook-frame { width: 100%; height: 850px; border: none; display: block; background: #ffffff; }
+  .tableau-embed {
+  margin: 30px 0 34px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--card-bg);
+}
+
+.tableau-embed tableau-viz {
+  width: 100%;
+  height: 750px;
+  display: block;
+}
 </style>
 </head>
 <body>
@@ -162,6 +176,16 @@
 <li>Desenho de dashboards interativos em Tableau para explorar tendências do mercado — vagas por competência, evolução salarial e distribuição geográfica</li>
 <li>Documentação técnica completa do processo, da modelação dimensional às decisões de ETL, em relatório escrito em LaTeX</li>
 </ul>
+
+<h3>Dashboard em Tableau</h3>
+
+<div class="tableau-embed">
+  <tableau-viz
+    src="https://public.tableau.com/views/Matilde_Eduardo_Afonso/Dashboard"
+    toolbar="bottom"
+    hide-tabs>
+  </tableau-viz>
+</div>
 
     </div>
   </div>
