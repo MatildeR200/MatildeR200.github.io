@@ -259,31 +259,6 @@
   </ul>
 
 
-  <h3>Resultados</h3>
-
-  <p>
-    Os melhores resultados dos dois modelos foram bastante próximos, permitindo
-    perceber que uma arquitetura mais complexa não garantiu, neste caso, um melhor
-    desempenho.
-  </p>
-
-  <ul class="detail-list">
-    <li>
-      <strong>Melhor MLP:</strong> 70,7% de Accuracy e 71,4% de F1-Score.
-    </li>
-    <li>
-      <strong>Melhor CNN:</strong> 69,9% de Accuracy e 70,7% de F1-Score.
-    </li>
-    <li>
-      Ambos os modelos atingiram cerca de 99% de Accuracy no treino, mas apenas cerca
-      de 70% na validação, evidenciando <strong>overfitting</strong>.
-    </li>
-    <li>
-      Na CNN, a divergência entre a loss de treino e validação tornou-se particularmente
-      evidente após cerca de 70 épocas.
-    </li>
-  </ul>
-
 
   <div class="detail-media">
     <img src="data:image/png;base64,..." alt="Curvas de loss e accuracy da CNN">
@@ -294,22 +269,24 @@
   </div>
 
 
-  <h3>Conclusão</h3>
+  <h3>Aplicação em contexto real</h3>
 
   <p>
-    O principal resultado deste projeto foi perceber que <strong>mais complexidade
-    arquitetural não significa necessariamente melhor desempenho</strong>. Apesar de
-    a CNN ser especificamente orientada para a análise de imagens, o MLP apresentou
-    um resultado ligeiramente superior neste conjunto de dados.
+    Este tipo de modelo poderia ser explorado como uma ferramenta de apoio à análise de imagens dermatológicas, por exemplo em sistemas de apoio à decisão clínica.
   </p>
 
   <p>
-    A análise das experiências mostrou também que o <strong>desbalanceamento dos
-    dados</strong> continuou a ser um desafio importante e que as escolhas de
-    arquitetura, otimização e função de loss tiveram um impacto significativo nos
-    resultados.
+    Perante uma nova imagem, o modelo poderia realizar uma classificação inicial e fornecer uma indicação sobre a classe mais provável. Esta informação poderia funcionar como apoio ao profissional de saúde, contribuindo para uma análise mais rápida e sistemática das imagens.
   </p>
 
+  <p>
+   Em contexto hospitalar ou clínico, uma aplicação deste género poderia ser interessante para:
+  </p>
+  <ul class="detail-list">
+  <li>Apoiar a triagem inicial de imagens dermatológicas;</li>
+  <li>Processar grandes volumes de imagens de forma automática;;</li>
+  <li>Sinalizar casos que mereçam uma análise mais detalhada;</li>
+  <li>Apoiar o profissional de saúde com uma segunda fonte de informação.</li> 
 
   <h3>Código</h3>
 
