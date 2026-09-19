@@ -122,7 +122,13 @@
 }
   .detail-body h3 { font-size: 18px; margin: 34px 0 14px; }
   .detail-list { list-style: none; margin: 0 0 24px; padding: 0; display: flex; flex-direction: column; gap: 12px; }
-  .detail-list li { position: relative; padding-left: 22px; color: var(--ink); font-size: 15.5px; }
+  .detail-list li {
+  position: relative;
+  padding-left: 22px;
+  color: var(--ink);
+  font-size: 15.5px;
+  text-align: justify;
+}
   .detail-list li::before { content: ""; position: absolute; left: 0; top: 9px; width: 8px; height: 1.4px; background: var(--blue); }
   .detail-media { margin: 30px 0; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--paper-alt); }
   .detail-media img { width: 100%; }
@@ -176,7 +182,7 @@
       
       <p>Nos últimos anos, a IA deixou de ser um tema exclusivo da investigação científica e tornou-se uma das principais causas de transformação do mercado de trabalho global. A aceleração do desenvolvimento de ferramentas e sistemas baseados em IA, especialmente após o ano de 2020, tem vindo a redesenhar de forma profunda a estrutura das profissões, os perfis de competências mais valorizados e as dinâmicas salariais em diversos setores.</p>
       
-      <p>Objetivo: O projeto <strong>Career Data AI</strong> surge com o objetivo de analisar o impacto crescente da IA no <strong>mercado de trabalho global</strong>strong> entre 2020 e 2026, de forma a compreender as tendências que moldam a procura por profissionais nesta área e produzir previsões futuras relevantes. Para tal, estruturamos esta análise em duas fases complementares: uma fase de Data Warehouse, com foco na análise descritiva e diagnóstica, e uma fase de Data Mining, orientada para análises preditivas e prescritivas. A solução apresenta uma interface simples e acessível, composta por dashboards interativos desenvolvidos no <strong>Tableau<strong>, organizados nos separadores Salary Insights, Global Overview e Job Market, que permite aos stakeholders explorar esta análise de forma autónoma e intuitiva, com apoio na tomada de decisão,tanto no contexto académico como profissional.</p>
+      <p>Objetivo: O projeto <strong>Career Data AI</strong> surge com o objetivo de analisar o impacto crescente da IA no <strong>mercado de trabalho global</strong> entre 2020 e 2026, de forma a compreender as tendências que moldam a procura por profissionais nesta área e produzir previsões futuras relevantes. Para tal, estruturamos esta análise em duas fases complementares: uma fase de Data Warehouse, com foco na análise descritiva e diagnóstica, e uma fase de Data Mining, orientada para análises preditivas e prescritivas. A solução apresenta uma interface simples e acessível, composta por dashboards interativos desenvolvidos no <strong>Tableau<strong>, organizados nos separadores Salary Insights, Global Overview e Job Market, que permite aos stakeholders explorar esta análise de forma autónoma e intuitiva, com apoio na tomada de decisão,tanto no contexto académico como profissional.</p>
 
 <ul class="detail-list">
 <li><strong>Modelação de um Data Warehouse</strong> em esquema estrela (star schema) em PostgreSQL, definindo tabelas de factos e dimensões a partir de dados brutos do mercado de trabalho em IA</li>
