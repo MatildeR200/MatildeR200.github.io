@@ -158,13 +158,6 @@
       <p> O projeto teve como objetivo analisar os fatores associados à <strong>receita de bilheteira</strong> de filmes a partir de um dataset do IMDB com mais de 10.000 registos. A análise combinou técnicas de <strong>pré-processamento, análise exploratória de dados e aprendizagem de redes Bayesianas</strong>, permitindo explorar relações entre características dos filmes e realizar inferências probabilísticas sobre a receita.
 </p>
 <ul class="detail-list">
-<li>6 experiências de VAE, ajustando arquitetura de filtros, dimensão do espaço latente e fator de perda de reconstrução</li>
-<li>Pipeline de pré-processamento próprio: conversão de imagens para arrays .npy, o que acelerou significativamente o treino face ao formato original</li>
-<li>Análise da progressão da loss (reconstrução vs. divergência KL) ao longo das epochs, para diagnosticar e corrigir qualidade visual entre experiências</li>
-<li>Extensão para cVAE, condicionando a geração ao género do filme (19 classes) via one-hot encoding, com o encoder e decoder a processar imagem e condição em conjunto</li>
-<li>Melhor configuração: 512 filtros, espaço latente de 50 dimensões, fator de perda de reconstrução 7000 — resultando numa redução de cerca de 78% na loss de treino</li>
-<li>No cVAE, o modelo aprendeu consistentemente a condição de género em todas as gerações, mesmo quando a qualidade visual dos posters ainda não atingia o nível do VAE não condicionado</li>
-</ul>
       
 <ul class="detail-list">
 <li>Pré-processamento e deteção de inconsistências em ~10.200 registos (valores em falta, variáveis categóricas)</li>
@@ -178,8 +171,9 @@
   <div class="notebook-label">Análise Exploratória — Rede Bayesiana</div>
   <iframe src="Parte1.html" class="notebook-frame" loading="lazy"></iframe>
 </div>
-
- <li>6 experiências de VAE, ajustando arquitetura de filtros, dimensão do espaço latente e fator de perda de reconstrução</li>
+  
+<ul class="detail-list">
+<li>6 experiências de VAE, ajustando arquitetura de filtros, dimensão do espaço latente e fator de perda de reconstrução</li>
 <li>Pipeline de pré-processamento próprio: conversão de imagens para arrays .npy, o que acelerou significativamente o treino face ao formato original</li>
 <li>Análise da progressão da loss (reconstrução vs. divergência KL) ao longo das epochs, para diagnosticar e corrigir qualidade visual entre experiências</li>
 <li>Extensão para cVAE, condicionando a geração ao género do filme (19 classes) via one-hot encoding, com o encoder e decoder a processar imagem e condição em conjunto</li>
