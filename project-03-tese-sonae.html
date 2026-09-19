@@ -146,29 +146,33 @@
     <a href="index.html#projetos" class="back-link">← Voltar aos projetos</a>
     <div class="eyebrow"><span class="tick"></span>PROJETO 03 / 07</div>
     <h1>Visão Computacional para Redução de Desperdício Alimentar</h1>
-    <div class="role">Tese de mestrado (MIACD) — estágio na MC Sonae — em curso</div>
-    <div class="detail-tags"><span>Computer Vision</span><span>YOLOv8</span><span>LLMs / VLMs</span><span>Optuna</span><span>Databricks</span><span>MLOps</span></div>
+    <div class="role">Dissertação de mestrado — Estágio na MC Digital (Sonae)</div>
+    <div class="detail-tags"><span>Computer Vision</span><span>YOLOv8</span><span>LLMs / VLMs</span><span>Optuna</span><span>Databricks</span></div>
   </div>
 </section>
 <section style="padding-top:0;">
   <div class="wrap">
     <div class="detail-body">
       
-      <p>Sistema de monitorização de prateleiras em supermercado através de visão computacional, combinando deteção de objetos e modelos de linguagem visual para reduzir desperdício e melhorar a gestão de stock em loja. O trabalho está estruturado em duas frentes complementares: treino de modelos e construção de pipelines de inferência em produção.</p>
-<h3>Deteção de frescura de fruta</h3>
-<ul class="detail-list">
-<li>Modelos YOLOv8 (n/s) treinados para classificar o estado de maturação de fruta em 3 classes (maduro, normal, verde)</li>
-<li>Otimização de hiperparâmetros com Optuna e validação cruzada estratificada (K=3), com extração de métricas por classe (Precision, Recall, mAP50, mAP50-95) a partir do melhor trial</li>
-<li>Comparação entre variantes de arquitetura (YOLOv5n6u, YOLOv8n, YOLOv8s) para escolher o melhor compromisso entre precisão e custo computacional</li>
-<li>Treino em GPU na Databricks, com gestão de infraestrutura própria — clusters, quotas de GPU, resolução de falhas de ambiente e versionamento de resultados em Unity Catalog</li>
-</ul>
-<h3>Deteção de ocupação e classificação de prateleiras</h3>
+      <p>Objetivo: Desenvolver um <strong>sistema de monitorização do estado de produtos</strong> em prateleiras em supermercado através de visão computacional, combinando deteção de objetos e modelos de linguagem visual para reduzir desperdício e melhorar a gestão de stock em loja. O trabalho está estruturado em duas frentes complementares: treino de modelos e construção de pipelines de inferência em produção.</p>
+
+<h3>Otimização de Processos: Deteção do estado de ocupação e tipo de produto:</h3>
 <ul class="detail-list">
 <li>8 experiências de classificação para ocupação, tipo de produto e categoria de produto em prateleira</li>
 <li>Pipelines assíncronos de classificação com modelos de linguagem visual (Azure OpenAI GPT-4.1 e Anthropic), incluindo rate limiting e lógica de retry para lidar com os limites das APIs</li>
 <li>Deteção e mitigação de erros de alucinação do modelo (falsos positivos de ocupação), com filtragem antes de propagar para as métricas finais</li>
 <li>Exploração de identificação de produto por similaridade de embeddings (MobileNetV2) face a imagens de catálogo, como alternativa à classificação direta por VLM</li>
 </ul>
+
+      
+<h3>Deteção do estado de maturação de fruta:</h3>
+<ul class="detail-list">
+<li>Modelos YOLOv8 (n/s) treinados para classificar o estado de maturação de fruta em 3 classes (maduro, normal, verde)</li>
+<li>Otimização de hiperparâmetros com Optuna e validação cruzada estratificada (K=3), com extração de métricas por classe (Precision, Recall, mAP50, mAP50-95) a partir do melhor trial</li>
+<li>Comparação entre variantes de arquitetura (YOLOv5n6u, YOLOv8n, YOLOv8s) para escolher o melhor compromisso entre precisão e custo computacional</li>
+<li>Treino em GPU na Databricks, com gestão de infraestrutura própria — clusters, quotas de GPU, resolução de falhas de ambiente e versionamento de resultados em Unity Catalog</li>
+</ul>
+
 
 
       <h3>Projeto complementar — deteção de maturação</h3>
