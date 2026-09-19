@@ -174,27 +174,127 @@
     utilizar no modelo.
   </p>
 
+  h3>Dados</h3>
+
+  <p>
+    O modelo foi desenvolvido a partir de um dataset com <strong>600 indivíduos</strong>,
+    contendo variáveis como idade, salário, existência de doença crónica, atividade
+    física e outras características do perfil de cada pessoa.
+  </p>
+
+  <p>
+    A variável objetivo, <strong>Decision</strong>, indica se o indivíduo opta ou não
+    pela aquisição do seguro de vida.
+  </p>
+
+  <h3>Análise inicial</h3>
+
+  <p>
+    Antes de construir o modelo, foi realizada uma análise das variáveis para perceber
+    quais poderiam estar mais relacionadas com a decisão de compra.
+  </p>
+
+  <p>
+    Foi também analisada a <strong>sugestão da seguradora</strong>, utilizada como uma
+    regra de pontuação baseada nas características dos indivíduos. Apesar de identificar
+    bem parte dos indivíduos que não compram o seguro, apresentou <strong>118 falsos
+    negativos</strong>, mostrando que esta regra, utilizada isoladamente, não era
+    suficiente para realizar a classificação.
+  </p>
+
+  <h3>Tratamento das variáveis contínuas</h3>
+
+  <p>
+    Um dos desafios encontrados esteve nas variáveis contínuas, nomeadamente
+    <strong>Age</strong> e <strong>Monthly_Salary</strong>. Foram realizados testes
+    estatísticos, incluindo Kolmogorov-Smirnov e Shapiro-Wilk, que indicaram que estas
+    variáveis não seguiam uma distribuição normal.
+  </p>
+
+  <p>
+    Por esse motivo, foram comparadas duas formas diferentes de representar estas
+    variáveis no modelo:
+  </p>
+
+  <ul class="detail-list">
+    <li>
+      <strong>Discretização:</strong> transformação dos valores contínuos em intervalos,
+      seguindo os mesmos intervalos utilizados pela regra da seguradora.
+    </li>
+    <li>
+      <strong>Gaussian Mixture Models (GMMs):</strong> modelação das distribuições das
+      variáveis através de misturas de distribuições Gaussianas.
+    </li>
+  </ul>
+
+  <p>
+    Para os GMMs, o algoritmo <strong>Expectation-Maximization (EM)</strong> foi
+    implementado manualmente para estimar os parâmetros das distribuições.
+  </p>
+
+
+  <h3>Modelo Bayesiano</h3>
+
+  <p>
+    Depois de preparar os dados, foi implementado o modelo Bayesiano
+    <strong>manualmente, sem recorrer a bibliotecas de Machine Learning</strong>.
+    O modelo calcula a probabilidade de cada classe a partir dos priors e das
+    probabilidades condicionais das diferentes variáveis.
+  </p>
+
+  <p>
+    Foram desenvolvidas duas versões do modelo para comparar diretamente as duas
+    formas de tratar as variáveis contínuas:
+  </p>
+
+  <ul class="detail-list">
+    <li>
+      <strong>Modelo com discretização:</strong> utiliza intervalos para representar
+      as variáveis contínuas.
+    </li>
+    <li>
+      <strong>Modelo com GMMs:</strong> utiliza as distribuições estimadas pelos
+      Gaussian Mixture Models para calcular as probabilidades.
+    </li>
+  </ul>
+
+
+  <h3>Seleção de variáveis</h3>
+
+  <p>
+    Para perceber se todas as variáveis eram realmente necessárias, foi aplicada
+    <strong>Backward Elimination</strong>.
+  </p>
+
+  <p>
+    O processo consistiu em remover iterativamente as variáveis que tinham menor
+    contributo para o desempenho do modelo, avaliando o impacto de cada remoção na
+    accuracy.
+  </p>
+
+  <p>
+    Desta forma, foi possível comparar o desempenho dos modelos com diferentes
+    conjuntos de variáveis e perceber se um modelo mais simples conseguia manter
+    ou melhorar os resultados.
+  </p>
+
+  <h3><strong>Aplicação em contexto real</strong></h3>
+
+  <p>
+    Uma abordagem deste género poderia ser utilizada por uma seguradora como
+    <strong>ferramenta de apoio à análise de perfis de cliente</strong>s. A partir das características
+    de um indivíduo, um modelo probabilístico poderia estimar a probabilidade de
+    este optar pela aquisição de um seguro.
+  </p>
+
+  <p>
+    Esta informação poderia ser utilizada para apoiar a análise de diferentes perfis,
+    identificar padrões associados à decisão de compra e ajudar a compreender quais
+    as características que mais contribuem para essa decisão.
+  </p>
+
       
-<h3>Tratamento das variáveis contínuas</h3>
-<ul class="detail-list">
-<li>Testes de Kolmogorov-Smirnov e Shapiro-Wilk confirmaram que nem Age nem Monthly_Salary seguem uma distribuição normal</li>
-<li>Duas abordagens comparadas para lidar com isso: discretização em intervalos (os mesmos usados na regra da seguradora) vs. modelação com Gaussian Mixture Models (GMMs)</li>
-<li>Algoritmo EM implementado manualmente para estimar os parâmetros dos GMMs (3 clusters na maioria dos casos, 2 para Monthly_Salary da classe 1)</li>
-<li>Correção de Laplace aplicada à variável Age discreta, para evitar probabilidades nulas na categoria sem amostras</li>
-</ul>
-<h3>Modelo Bayesiano</h3>
-<ul class="detail-list">
-<li>Implementação manual do Teorema de Bayes: cálculo de priors e likelihoods por variável, sem bibliotecas externas</li>
-<li>Dois modelos treinados em paralelo — um com as variáveis contínuas discretizadas, outro com a likelihood calculada a partir da pdf dos GMMs — para comparar diretamente as duas abordagens</li>
-<li>Seleção de variáveis por Backward Elimination, removendo iterativamente a feature cujo corte menos prejudica (ou melhora) a accuracy</li>
-</ul>
-<h3>Resultados</h3>
-<ul class="detail-list">
-<li>Modelo com discretização: eliminadas Gender, N_children e Monthly_Salary sem perda de accuracy (mantida em 80.83%)</li>
-<li>Modelo com GMMs: eliminada apenas Physical_Status, com a accuracy a subir para 85.83% (melhor resultado do projeto)</li>
-<li>A classe 1 (compra do seguro) é a mais difícil de classificar, dado o desbalanceamento do dataset (~68% classe 0 / 32% classe 1); ainda assim, o recall da classe 1 subiu de 51% (discretização) para 64% (GMMs)</li>
-<li>Conclusão: GMMs modelam melhor as variáveis contínuas do que a discretização, e usar menos variáveis (via feature selection) igualou ou superou o desempenho com o dataset completo</li>
-</ul>
+
 <h3>Código</h3>
 <div class="notebook-embed">
   <div class="notebook-label">📓 FIAD_Projeto2.ipynb — modelo Bayesiano implementado do zero</div>
