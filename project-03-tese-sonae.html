@@ -167,15 +167,16 @@
       
 <h3>Deteção do estado de maturação de fruta:</h3>
 <ul class="detail-list">
-<li>Modelos YOLOv8 (n/s) treinados para classificar o estado de maturação de fruta em 3 classes (maduro, normal, verde)</li>
-<li>Otimização de hiperparâmetros com Optuna e validação cruzada estratificada (K=3), com extração de métricas por classe (Precision, Recall, mAP50, mAP50-95) a partir do melhor trial</li>
-<li>Comparação entre variantes de arquitetura (YOLOv5n6u, YOLOv8n, YOLOv8s) para escolher o melhor compromisso entre precisão e custo computacional</li>
-<li>Treino em GPU na Databricks, com gestão de infraestrutura própria — clusters, quotas de GPU, resolução de falhas de ambiente e versionamento de resultados em Unity Catalog</li>
+<li> Definição de um score combinado com base no <strong>critério de negócio</strong>: foco em reduzir o desperdício alimentar</li>
+<li>Modelos YOLO treinados para classificar o estado de maturação de fruta em 3 classes (maduro, normal, verde)</li>
+<li>Otimização de hiperparâmetros com Optuna;</li>
+<li>Priorização dos <strong>requisitos dos clientes:</strong> comparação entre variantes de arquitetura para escolher o melhor compromisso entre precisão e custo computacional</li>
+<li>Treino em GPU na Databricks;</li>
 </ul>
 
 
-
-      <h3>Projeto complementar — deteção de maturação</h3>
+      <h3> -----------------------------------------------------------</h3>
+      <h3>Curso de Formação: Desenvolvimento de uma Interface para a deteção do estado de maturação</h3>
 
 <p>
 No âmbito de uma formação, desenvolvi um projeto independente inspirado no trabalho
