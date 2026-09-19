@@ -156,22 +156,22 @@
       
       <p>Objetivo: Desenvolver um <strong>sistema de monitorização do estado de produtos</strong> em prateleiras em supermercado através de visão computacional, combinando deteção de objetos e modelos de linguagem visual para reduzir desperdício e melhorar a gestão de stock em loja. O trabalho está estruturado em duas frentes complementares: treino de modelos e construção de pipelines de inferência em produção.</p>
 
-<h3>Otimização de Processos: Deteção do estado de ocupação e tipo de produto:</h3>
+<h3>Otimização de Processos: Deteção do Estado de Ocupação e Tipo de Produto</h3>
 <ul class="detail-list">
 <li>Experiências do estado de ocupação com a área de interseção das bouding boxes e exploração de abordagens de VLM;
 <li>Tipo de produto, as imagens disponibilizadas não continham todos os produtos do continente, então utilizamos modelos de VLMs;</li>
-<li>Criação de um pipeline de tarefas de automatização de processos.</li>
-<li>Identifiação de limitações e mitigação de erros/alucinação do modelo (falsos positivos)</li>
+<li>Criação de um pipeline de tarefas de automatização de processos;</li>
+<li>Identifiação de limitações e mitigação de erros/alucinação do modelo (falsos positivos).</li>
 </ul>
 
       
 <h3>Deteção do estado de maturação de fruta:</h3>
 <ul class="detail-list">
-<li> Definição de um score combinado com base no <strong>critério de negócio</strong>: foco em reduzir o desperdício alimentar</li>
-<li>Modelos YOLO treinados para classificar o estado de maturação de fruta em 3 classes (maduro, normal, verde)</li>
+<li> Definição de um score combinado com base no <strong>critério de negócio</strong>: foco em reduzir o desperdício alimentar;</li>
+<li>Modelos YOLO treinados para classificar o estado de maturação de fruta em 3 classes (maduro, normal, verde);</li>
 <li>Otimização de hiperparâmetros com Optuna;</li>
-<li>Priorização dos <strong>requisitos dos clientes:</strong> comparação entre variantes de arquitetura para escolher o melhor compromisso entre precisão e custo computacional</li>
-<li>Treino em GPU na Databricks;</li>
+<li>Priorização dos <strong>requisitos dos clientes:</strong> comparação entre variantes de arquitetura para escolher o melhor compromisso entre precisão e custo computacional;</li>
+<li>Treino em GPU na Databricks.</li>
 </ul>
 
 
@@ -180,22 +180,21 @@
 
 <p>
 No âmbito de uma formação, desenvolvi um projeto independente inspirado no trabalho
-realizado na tese sobre deteção do estado de maturação da fruta. O objetivo foi aplicar
+realizado na dissertação sobre deteção do estado de maturação da fruta. O objetivo foi aplicar
 esse conhecimento num protótipo mais orientado para utilização prática.
 </p>
 
 <h3>Modelo de IA</h3>
 
 <p>
-Treinei um modelo para identificar diferentes estados de maturação da fruta, aplicando
+Treinei um modelo para identificar diferentes estados de maturação da fruta (CNN), aplicando
 os conhecimentos adquiridos no desenvolvimento e avaliação de modelos de visão computacional.
 </p>
 
 <h3>Interface</h3>
 
 <p>
-Para disponibilizar o modelo de forma mais acessível, desenvolvi uma interface no Lovable,
-permitindo apresentar e explorar os resultados da classificação.
+Depois do treino do modelo, desenvolvi uma interface no Lovable para apresentar os resultados de forma mais simples e visual. A ideia foi também criar um protótipo que permitisse mostrar ao cliente como poderia ser uma futura aplicação.
 </p>
 
 <div class="code-row">
