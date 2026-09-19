@@ -162,8 +162,19 @@
   <div class="wrap">
     <div class="detail-body">
      
-<p>Modelo de decisão Bayesiano, implementado manualmente sem recurso a bibliotecas de machine learning, para prever se um indivíduo opta pela aquisição de um seguro de vida a partir de 8 variáveis do seu perfil (idade, salário, doença crónica, atividade física, entre outras) sobre um dataset de 600 indivíduos.</p>
-<p>Antes do modelo em si, foi calculada a sugestão da própria seguradora (uma regra de pontuação) como feature adicional, e avaliada isoladamente: identifica bem quem não compra o seguro, mas tem 118 falsos negativos — sozinha não é uma boa classificadora, o que motivou a construção do modelo Bayesiano completo.</p>
+<p>
+    O objetivo deste projeto foi desenvolver um <strong>modelo de decisão Bayesiano</strong>
+    capaz de estimar a probabilidade de uma pessoa optar pela aquisição de um seguro de
+    vida, com base nas suas características pessoais e financeiras.
+  </p>
+
+<p>
+    A ideia foi perceber <strong>que características estão mais relacionadas com esta
+    decisão</strong> e avaliar diferentes formas de representar os dados antes de os
+    utilizar no modelo.
+  </p>
+
+      
 <h3>Tratamento das variáveis contínuas</h3>
 <ul class="detail-list">
 <li>Testes de Kolmogorov-Smirnov e Shapiro-Wilk confirmaram que nem Age nem Monthly_Salary seguem uma distribuição normal</li>
