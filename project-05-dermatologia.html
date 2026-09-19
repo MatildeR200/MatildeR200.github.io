@@ -161,8 +161,11 @@
 <section style="padding-top:0;">
   <div class="wrap">
 
-<p>Classificação de imagens de lesões cutâneas no dataset DermaMNIST (10.015 imagens 28×28 RGB, 7 classes de doenças dermatológicas), comparando um Perceptrão Multicamada (MLP) com uma Rede Neuronal Convolucional (CNN) para perceber até que ponto a componente convolucional traz vantagem real numa tarefa deste tipo.</p>
-<p>O dataset está fortemente desbalanceado — a classe maioritária (melanocytic nevi) representa 67% das imagens, contra apenas 1.14% da classe minoritária. Combateu-se isto com três técnicas em conjunto: oversampling com SMOTE em todas as classes exceto a maioritária, undersampling da classe maioritária, e pesos invertidos na função de loss para penalizar mais os erros nas classes raras.</p>
+<p><strong>Objetivo:</strong> A análise de imagens dermatológicas é uma área onde a Inteligência Artificial pode
+    ser utilizada para identificar padrões visuais associados a diferentes tipos de
+    lesões cutâneas. Neste projeto, explorei até que ponto diferentes arquiteturas de
+    redes neuronais conseguem aprender estes padrões e se uma CNN apresenta vantagens
+    reais face a uma abordagem mais simples baseada num MLP.</p>
 <h3>Arquiteturas testadas</h3>
 <ul class="detail-list">
 <li>MLP: camada de input, 2 a 5 hidden layers (entre 512 e 1024 neurónios), camada de output — 8 experiências fazendo variar ativação, otimizador, learning rate e batch size</li>
