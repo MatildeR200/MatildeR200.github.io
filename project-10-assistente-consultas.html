@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistente de Consultas — Assistente Virtual para Doentes — Matilde Reis</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📐</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAFAF7; --paper-alt: #F1F2EE; --ink: #12202C; --ink-soft: #4C5A63;
+    --line: #D7DCDE; --blue: #2A4D8F; --blue-soft: #E8EDF6; --amber: #C97A21;
+    --card-bg: #FFFFFF; --radius: 3px; --maxw: 1080px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #10171C; --paper-alt: #161F26; --ink: #ECEEEE; --ink-soft: #A8B3B8;
+      --line: #2B363D; --blue: #86AAF0; --blue-soft: #1B2A3E; --amber: #E8A94C; --card-bg: #141D24;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #10171C; --paper-alt: #161F26; --ink: #ECEEEE; --ink-soft: #A8B3B8;
+    --line: #2B363D; --blue: #86AAF0; --blue-soft: #1B2A3E; --amber: #E8A94C; --card-bg: #141D24;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: 'Space Grotesk', 'IBM Plex Sans', sans-serif; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  a { color: inherit; }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  header.nav { position: sticky; top: 0; z-index: 50; background: var(--paper); border-bottom: 1px solid var(--line); }
+  .nav-inner { max-width: var(--maxw); margin: 0 auto; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; position: relative; }
+  .nav-name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 17px; text-decoration: none; }
+  .nav-links { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; }
+  .nav-links a { text-decoration: none; font-size: 14px; color: var(--ink-soft); transition: color .15s ease; }
+  .nav-links a:hover { color: var(--blue); }
+  .nav-toggle { display: none; background: none; border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 10px; font-size: 14px; color: var(--ink); cursor: pointer; }
+  @media (max-width: 720px) {
+    .nav-links { display: none; }
+    .nav-toggle { display: inline-block; }
+    .nav-links.open { display: flex; flex-direction: column; gap: 0; position: absolute; top: 100%; left: 0; right: 0; background: var(--paper); border-bottom: 1px solid var(--line); padding: 8px 28px 18px; z-index: 60; }
+    .nav-links.open a { padding: 10px 0; border-bottom: 1px solid var(--line); }
+  }
+
+  .hero { position: relative; padding: 100px 0 88px; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 40px 40px; background-position: center top; -webkit-mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%); mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%); overflow: hidden; }
+  .hero-content { position: relative; }
+  .eyebrow, .kicker { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--blue); display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .eyebrow .tick, .kicker .tick { width: 20px; height: 1px; background: var(--blue); display: inline-block; }
+  .hero h1 { font-size: clamp(40px, 7vw, 68px); line-height: 1.04; margin-bottom: 18px; }
+  .hero .role { font-size: clamp(16px, 2.2vw, 19px); color: var(--ink-soft); max-width: 640px; margin-bottom: 20px; }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 13px 24px; border-radius: var(--radius); text-decoration: none; font-size: 14px; font-weight: 500; border: 1px solid var(--ink); transition: all .15s ease; }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .btn-primary:hover { background: var(--blue); border-color: var(--blue); }
+  .btn-ghost { color: var(--ink); border-color: var(--line); }
+  .btn-ghost:hover { border-color: var(--ink); }
+  .corner { position: absolute; width: 24px; height: 24px; opacity: .5; }
+  .corner svg { width: 100%; height: 100%; stroke: var(--blue); fill: none; stroke-width: 1.4; }
+  .corner.tl { top: 24px; left: 0; } .corner.br { bottom: 18px; right: 0; }
+
+  section { padding: 84px 0; border-bottom: 1px solid var(--line); }
+  section:last-of-type { border-bottom: none; }
+  .section-title { font-size: clamp(24px, 3.4vw, 34px); margin-bottom: 8px; }
+
+  .about-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 56px; align-items: start; margin-top: 34px; }
+  .about-body p { color: var(--ink-soft); font-size: 16px; max-width: 540px; margin: 0 0 16px; }
+  .fact-list { border-top: 1px solid var(--line); }
+  .fact { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+  .fact dt { color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; }
+  .fact dd { margin: 0; text-align: right; max-width: 60%; }
+  @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; gap: 30px; } }
+
+  .skill-groups { margin-top: 36px; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 30px 40px; }
+  .skill-group h3 { font-size: 14px; font-family: 'IBM Plex Mono', monospace; font-weight: 500; color: var(--blue); margin-bottom: 14px; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 12px; font-size: 13.5px; color: var(--ink); background: var(--card-bg); }
+
+  .proj-grid { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; }
+  .proj-card { background: var(--card-bg); border: 1px solid var(--line); border-radius: var(--radius); display: flex; flex-direction: column; overflow: hidden; }
+  .proj-media { aspect-ratio: 16/10; background: var(--paper-alt); display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .proj-media img { width: 100%; height: 100%; object-fit: cover; }
+  .proj-media svg { width: 52%; height: 52%; stroke: var(--blue); fill: none; stroke-width: 1.3; opacity: .8; }
+  .proj-body { padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .proj-index { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--blue); }
+  .proj-title { font-size: 18px; font-weight: 600; line-height: 1.3; }
+  .proj-sub { font-size: 12.5px; color: var(--ink-soft); font-style: italic; margin-top: -6px; }
+  .proj-desc { font-size: 14px; color: var(--ink-soft); flex: 1; }
+  .proj-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .proj-tags span { font-size: 11.5px; font-family: 'IBM Plex Mono', monospace; color: var(--ink-soft); border: 1px solid var(--line); border-radius: var(--radius); padding: 3px 8px; }
+  .proj-link { margin-top: 8px; font-size: 13.5px; font-weight: 500; color: var(--blue); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; width: fit-content; }
+  .proj-link .arrow { transition: transform .15s ease; }
+  .proj-link:hover .arrow { transform: translateX(3px); }
+  .proj-card.featured { grid-column: span 2; }
+  @media (max-width: 720px) { .proj-card.featured { grid-column: span 1; } }
+
+  .contact-wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 30px; margin-top: 30px; }
+  .contact-links { display: flex; flex-direction: column; gap: 10px; }
+  .contact-links a { text-decoration: none; font-size: 18px; border-bottom: 1px solid var(--line); padding-bottom: 4px; width: fit-content; transition: border-color .15s ease; }
+  .contact-links a:hover { border-color: var(--blue); color: var(--blue); }
+  footer { padding: 26px 0; font-size: 12.5px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; }
+
+  /* ---- project detail page ---- */
+  .back-link { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--blue); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 28px; }
+  .back-link:hover { text-decoration: underline; }
+  .detail-hero { padding: 64px 0 48px; }
+  .detail-hero h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.1; margin-bottom: 14px; max-width: 760px; }
+  .detail-hero .role { font-size: 15px; font-style: italic; color: var(--ink-soft); margin-bottom: 22px; }
+  .detail-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .detail-body { max-width: 720px; }
+  .detail-body p { color: var(--ink-soft); font-size: 16.5px; margin: 0 0 20px; }
+  .detail-body h3 { font-size: 18px; margin: 34px 0 14px; }
+  .detail-list { list-style: none; margin: 0 0 24px; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .detail-list li { position: relative; padding-left: 22px; color: var(--ink); font-size: 15.5px; }
+  .detail-list li::before { content: ""; position: absolute; left: 0; top: 9px; width: 8px; height: 1.4px; background: var(--blue); }
+  .detail-media { margin: 30px 0; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--paper-alt); }
+  .detail-media img { width: 100%; }
+  .detail-media-cap { font-size: 12.5px; color: var(--ink-soft); text-align: center; padding: 10px; font-style: italic; }
+  .external-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; margin-right: 10px; padding: 12px 22px; border: 1px solid var(--ink); border-radius: var(--radius); text-decoration: none; font-size: 14px; }
+  .external-link:hover { background: var(--ink); color: var(--paper); }
+  .code-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+  .notebook-embed { margin: 18px 0 34px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .notebook-label { padding: 10px 16px; background: var(--paper-alt); font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-soft); border-bottom: 1px solid var(--line); }
+  .notebook-frame { width: 100%; height: 850px; border: none; display: block; background: #ffffff; }
+  /* ---- adições para esta página ---- */
+  .detail-tags span { font-size: 12px; font-family: 'IBM Plex Mono', monospace; color: var(--ink-soft); border: 1px solid var(--line); border-radius: var(--radius); padding: 4px 10px; }
+  .flow { list-style: none; counter-reset: passo; margin: 18px 0 30px; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .flow li { counter-increment: passo; position: relative; padding: 14px 16px 14px 58px; background: var(--card-bg); border: 1px solid var(--line); border-radius: var(--radius); font-size: 15px; color: var(--ink-soft); }
+  .flow li strong { color: var(--ink); }
+  .flow li::before { content: counter(passo, decimal-leading-zero); position: absolute; left: 16px; top: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--blue); }
+  .note { border-left: 2px solid var(--amber); background: var(--paper-alt); padding: 14px 18px; font-size: 14.5px; color: var(--ink-soft); margin: 0 0 24px; }
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-name">Matilde Reis</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#sobre">Sobre</a></li>
+      <li><a href="index.html#competencias">Competências</a></li>
+      <li><a href="index.html#projetos">Projetos</a></li>
+      <li><a href="index.html#contacto">Contacto</a></li>
+    </ul>
+  </div>
+</header>
+<section class="detail-hero">
+  <div class="wrap">
+    <a href="index.html#projetos" class="back-link">← Voltar aos projetos</a>
+    <div class="eyebrow"><span class="tick"></span>PROJETO 10</div>
+    <h1>Assistente de Consultas — Assistente Virtual para Doentes</h1>
+    <div class="role">Projeto Pessoal — Protótipo de IA Generativa para Saúde</div>
+    <div class="detail-tags"><span>IA Generativa</span><span>LLM</span><span>RAG</span><span>Saúde</span><span>Python</span><span>Streamlit</span><span>Lovable</span><span>Prototipagem</span></div>
+    <div class="cta-row" style="margin-top:26px;">
+      <a href="https://screen-shot-magic-074.lovable.app" class="btn btn-primary" target="_blank" rel="noopener">Experimentar o protótipo ↗</a>
+    </div>
+  </div>
+</section>
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="detail-body">
+
+<p><strong>Objetivo:</strong> criar um assistente de conversação que responda às perguntas práticas dos doentes — preparação para exames, horários e visitas, documentos, marcações e estacionamento — usando <strong>apenas a informação oficial do hospital</strong>, indicando sempre a fonte de cada resposta e encaminhando para um profissional qualquer pergunta clínica.</p>
+<p>Grande parte das chamadas recebidas pelos secretariados de um hospital são perguntas repetitivas, cuja resposta já existe em folhetos e regulamentos. Ao mesmo tempo, muitos exames são adiados porque o doente não fez a preparação correta. Este projeto explora como a IA generativa pode responder a estas perguntas a qualquer hora, de forma segura e controlada.</p>
+
+<div class="detail-media"><img src="images/assistente-consultas.png" alt="Interface do assistente: conversa com o doente e painel de utilização do hospital"></div>
+<div class="detail-media-cap">Exemplo da interface — conversa com o doente e painel do hospital (dados fictícios)</div>
+
+<h3>O que foi feito</h3>
+<ul class="detail-list">
+  <li><strong>Protótipo interativo da interface (Lovable)</strong> com duas áreas: a <em>vista do doente</em>, um chat simples e acessível, e o <em>painel do hospital</em>, com indicadores de utilização, temas mais perguntados e pedidos encaminhados.</li>
+  <li><strong>Respostas sempre com fonte:</strong> cada resposta termina com o documento e a página de onde a informação foi retirada (por exemplo, "Folheto de preparação para colonoscopia, p. 2"), para o doente e o hospital poderem verificar.</li>
+  <li><strong>Encaminhamento de perguntas clínicas:</strong> perguntas sobre medicação, sintomas ou diagnósticos não são respondidas pelo assistente, que encaminha o doente para o serviço ou para a enfermagem. Em situações urgentes, indica o 112 ou a Urgência.</li>
+  <li><strong>Gestão da base de conhecimento:</strong> o hospital escolhe que documentos o assistente pode usar; só os documentos com estado "Aprovado" são considerados.</li>
+  <li><strong>Implementação do núcleo em Python (RAG):</strong> indexação dos documentos, pesquisa semântica, geração da resposta com um modelo de linguagem e regras de segurança, com uma interface em Streamlit.</li>
+</ul>
+
+<h3>Como funciona</h3>
+<p>O assistente usa <strong>RAG (Retrieval-Augmented Generation)</strong>: o modelo de linguagem não responde com o que "sabe" — primeiro procura-se a informação nos documentos do hospital e só depois o modelo a reescreve numa resposta curta e simples.</p>
+<ol class="flow">
+  <li><strong>Regras de segurança.</strong> Antes de qualquer IA, a pergunta é verificada: se for urgente ou clínica, não é respondida e é encaminhada.</li>
+  <li><strong>Indexação.</strong> Os documentos aprovados (PDF) são divididos em excertos e transformados em vetores com um modelo de <em>embeddings</em> multilingue, guardando o documento e a página de cada excerto.</li>
+  <li><strong>Pesquisa semântica.</strong> A pergunta é também transformada num vetor e são escolhidos os excertos mais parecidos.</li>
+  <li><strong>Limiar de confiança.</strong> Se nenhum excerto for suficientemente relevante, o assistente diz que não encontrou a informação, em vez de inventar.</li>
+  <li><strong>Geração.</strong> O modelo de linguagem recebe os excertos e instruções rígidas: responder só com base neles, nunca dar conselhos médicos e indicar a fonte.</li>
+  <li><strong>Registo anónimo.</strong> Para o painel, guarda-se apenas o tema e o resultado de cada conversa, nunca o texto da pergunta.</li>
+</ol>
+
+<p class="note">O sistema foi pensado para correr <strong>dentro da infraestrutura do hospital</strong>, com modelos abertos executados localmente (por exemplo, através do Ollama), para que nenhum dado saia do hospital. Também pode funcionar com um serviço de IA na cloud, desde que haja garantias contratuais de proteção de dados.</p>
+
+<h3>Vantagens para o hospital</h3>
+<ul class="detail-list">
+  <li><strong>Menos chamadas e menos espera ao telefone:</strong> o secretariado fica disponível para os casos que precisam realmente de uma pessoa.</li>
+  <li><strong>Menos exames adiados por má preparação:</strong> por exemplo, colonoscopias canceladas porque o doente não seguiu as instruções corretamente.</li>
+  <li><strong>Disponível 24 horas por dia:</strong> os doentes têm resposta à noite e ao fim de semana, quando os serviços estão fechados.</li>
+  <li><strong>Conhecimento das dúvidas dos doentes:</strong> os temas mais perguntados e as perguntas sem resposta mostram que informação deve ser criada ou melhor explicada.</li>
+  <li><strong>Risco controlado:</strong> não dá conselhos clínicos, usa apenas informação aprovada pelo hospital e indica sempre a fonte.</li>
+  <li><strong>Fácil de manter:</strong> quando um folheto muda, basta substituir o documento — não é preciso treinar novamente o modelo.</li>
+</ul>
+
+<p>O objetivo não é substituir o contacto humano, mas libertar os profissionais das perguntas repetitivas, garantindo que o doente recebe sempre informação correta e oficial e que, quando precisa de uma pessoa, é encaminhado para a equipa certa.</p>
+
+<h3>Tecnologias</h3>
+<ul class="detail-list">
+  <li><strong>Interface (protótipo):</strong> Lovable</li>
+  <li><strong>Implementação:</strong> Python, Streamlit, sentence-transformers (embeddings multilingues), pypdf</li>
+  <li><strong>Modelo de linguagem:</strong> modelos abertos executados localmente com Ollama (por exemplo, Qwen 2.5 ou Llama 3.1)</li>
+</ul>
+
+    </div>
+  </div>
+</section>
+<footer><div class="wrap">© 2026 Matilde Reis</div></footer>
+<script>
+  document.getElementById('navToggle').addEventListener('click', function() {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+  document.querySelectorAll('.nav-links a').forEach(function(a) {
+    a.addEventListener('click', function() { document.getElementById('navLinks').classList.remove('open'); });
+  });
+</script>
+</body>
+</html>
