@@ -152,11 +152,10 @@
   <div class="wrap">
     <a href="index.html#projetos" class="back-link">← Voltar aos projetos</a>
     <div class="eyebrow"><span class="tick"></span>PROJETO 10</div>
-    <h1>Assistente de Consultas — Assistente Virtual para Doentes</h1>
-    <div class="role">Projeto Pessoal — Protótipo de IA Generativa para Saúde</div>
-    <div class="detail-tags"><span>IA Generativa</span><span>LLM</span><span>RAG</span><span>Saúde</span><span>Python</span><span>Streamlit</span><span>Lovable</span><span>Prototipagem</span></div>
+    <h1>Assistente Virtual de Consultas para Doentes</h1>
+    <div class="role">Ideia - Protótipo de IA Generativa para Saúde</div>
     <div class="cta-row" style="margin-top:26px;">
-      <a href="https://screen-shot-magic-074.lovable.app" class="btn btn-primary" target="_blank" rel="noopener">Experimentar o protótipo ↗</a>
+      <a href="https://screen-shot-magic-074.lovable.app" class="btn btn-primary" target="_blank" rel="noopener">Ver interface ↗</a>
     </div>
   </div>
 </section>
@@ -164,26 +163,22 @@
   <div class="wrap">
     <div class="detail-body">
 
-<p><strong>Objetivo:</strong> criar um assistente de conversação que responda às perguntas práticas dos doentes — preparação para exames, horários e visitas, documentos, marcações e estacionamento — usando <strong>apenas a informação oficial do hospital</strong>, indicando sempre a fonte de cada resposta e encaminhando para um profissional qualquer pergunta clínica.</p>
+<p><strong>Objetivo:</strong> criar um assistente de conversação que responda às perguntas dos doentes, como por exemplo, a preparação para exames, horários e visitas, documentos, marcações com <strong>apenas a informação oficial do hospital</strong> (documentos oficiais).</p>
 <p>Grande parte das chamadas recebidas pelos secretariados de um hospital são perguntas repetitivas, cuja resposta já existe em folhetos e regulamentos. Ao mesmo tempo, muitos exames são adiados porque o doente não fez a preparação correta. Este projeto explora como a IA generativa pode responder a estas perguntas a qualquer hora, de forma segura e controlada.</p>
 
-<div class="detail-media"><img src="images/assistente-consultas.png" alt="Interface do assistente: conversa com o doente e painel de utilização do hospital"></div>
-<div class="detail-media-cap">Exemplo da interface — conversa com o doente e painel do hospital (dados fictícios)</div>
-
-<h3>O que foi feito</h3>
+<h3>Ideia:</h3>
 <ul class="detail-list">
   <li><strong>Protótipo interativo da interface (Lovable)</strong> com duas áreas: a <em>vista do doente</em>, um chat simples e acessível, e o <em>painel do hospital</em>, com indicadores de utilização, temas mais perguntados e pedidos encaminhados.</li>
   <li><strong>Respostas sempre com fonte:</strong> cada resposta termina com o documento e a página de onde a informação foi retirada (por exemplo, "Folheto de preparação para colonoscopia, p. 2"), para o doente e o hospital poderem verificar.</li>
   <li><strong>Encaminhamento de perguntas clínicas:</strong> perguntas sobre medicação, sintomas ou diagnósticos não são respondidas pelo assistente, que encaminha o doente para o serviço ou para a enfermagem. Em situações urgentes, indica o 112 ou a Urgência.</li>
   <li><strong>Gestão da base de conhecimento:</strong> o hospital escolhe que documentos o assistente pode usar; só os documentos com estado "Aprovado" são considerados.</li>
-  <li><strong>Implementação do núcleo em Python (RAG):</strong> indexação dos documentos, pesquisa semântica, geração da resposta com um modelo de linguagem e regras de segurança, com uma interface em Streamlit.</li>
 </ul>
 
 <h3>Como funciona</h3>
 <p>O assistente usa <strong>RAG (Retrieval-Augmented Generation)</strong>: o modelo de linguagem não responde com o que "sabe" — primeiro procura-se a informação nos documentos do hospital e só depois o modelo a reescreve numa resposta curta e simples.</p>
 <ol class="flow">
   <li><strong>Regras de segurança.</strong> Antes de qualquer IA, a pergunta é verificada: se for urgente ou clínica, não é respondida e é encaminhada.</li>
-  <li><strong>Indexação.</strong> Os documentos aprovados (PDF) são divididos em excertos e transformados em vetores com um modelo de <em>embeddings</em> multilingue, guardando o documento e a página de cada excerto.</li>
+  <li><strong>Indexação.</strong> Os documentos (PDF) são divididos em excertos e transformados em vetores com um modelo de <em>embeddings</em> multilingue, guardando o documento e a página de cada excerto.</li>
   <li><strong>Pesquisa semântica.</strong> A pergunta é também transformada num vetor e são escolhidos os excertos mais parecidos.</li>
   <li><strong>Limiar de confiança.</strong> Se nenhum excerto for suficientemente relevante, o assistente diz que não encontrou a informação, em vez de inventar.</li>
   <li><strong>Geração.</strong> O modelo de linguagem recebe os excertos e instruções rígidas: responder só com base neles, nunca dar conselhos médicos e indicar a fonte.</li>
@@ -203,13 +198,6 @@
 </ul>
 
 <p>O objetivo não é substituir o contacto humano, mas libertar os profissionais das perguntas repetitivas, garantindo que o doente recebe sempre informação correta e oficial e que, quando precisa de uma pessoa, é encaminhado para a equipa certa.</p>
-
-<h3>Tecnologias</h3>
-<ul class="detail-list">
-  <li><strong>Interface (protótipo):</strong> Lovable</li>
-  <li><strong>Implementação:</strong> Python, Streamlit, sentence-transformers (embeddings multilingues), pypdf</li>
-  <li><strong>Modelo de linguagem:</strong> modelos abertos executados localmente com Ollama (por exemplo, Qwen 2.5 ou Llama 3.1)</li>
-</ul>
 
     </div>
   </div>
