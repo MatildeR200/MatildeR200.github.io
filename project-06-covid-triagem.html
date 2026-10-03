@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triagem de Doentes COVID-19 — Matilde Reis</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📐</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAFAF7; --paper-alt: #F1F2EE; --ink: #12202C; --ink-soft: #4C5A63;
+    --line: #D7DCDE; --blue: #2A4D8F; --blue-soft: #E8EDF6; --amber: #C97A21;
+    --card-bg: #FFFFFF; --radius: 3px; --maxw: 1080px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #10171C; --paper-alt: #161F26; --ink: #ECEEEE; --ink-soft: #A8B3B8;
+      --line: #2B363D; --blue: #86AAF0; --blue-soft: #1B2A3E; --amber: #E8A94C; --card-bg: #141D24;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #10171C; --paper-alt: #161F26; --ink: #ECEEEE; --ink-soft: #A8B3B8;
+    --line: #2B363D; --blue: #86AAF0; --blue-soft: #1B2A3E; --amber: #E8A94C; --card-bg: #141D24;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: 'Space Grotesk', 'IBM Plex Sans', sans-serif; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  a { color: inherit; }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  header.nav { position: sticky; top: 0; z-index: 50; background: var(--paper); border-bottom: 1px solid var(--line); }
+  .nav-inner { max-width: var(--maxw); margin: 0 auto; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; position: relative; }
+  .nav-name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 17px; text-decoration: none; }
+  .nav-links { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; }
+  .nav-links a { text-decoration: none; font-size: 14px; color: var(--ink-soft); transition: color .15s ease; }
+  .nav-links a:hover { color: var(--blue); }
+  .nav-toggle { display: none; background: none; border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 10px; font-size: 14px; color: var(--ink); cursor: pointer; }
+  @media (max-width: 720px) {
+    .nav-links { display: none; }
+    .nav-toggle { display: inline-block; }
+    .nav-links.open { display: flex; flex-direction: column; gap: 0; position: absolute; top: 100%; left: 0; right: 0; background: var(--paper); border-bottom: 1px solid var(--line); padding: 8px 28px 18px; z-index: 60; }
+    .nav-links.open a { padding: 10px 0; border-bottom: 1px solid var(--line); }
+  }
+
+  .hero { position: relative; padding: 100px 0 88px; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 40px 40px; background-position: center top; -webkit-mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%); mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%); overflow: hidden; }
+  .hero-content { position: relative; }
+  .eyebrow, .kicker { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--blue); display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .eyebrow .tick, .kicker .tick { width: 20px; height: 1px; background: var(--blue); display: inline-block; }
+  .hero h1 { font-size: clamp(40px, 7vw, 68px); line-height: 1.04; margin-bottom: 18px; }
+  .hero .role { font-size: clamp(16px, 2.2vw, 19px); color: var(--ink-soft); max-width: 640px; margin-bottom: 20px; }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 13px 24px; border-radius: var(--radius); text-decoration: none; font-size: 14px; font-weight: 500; border: 1px solid var(--ink); transition: all .15s ease; }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .btn-primary:hover { background: var(--blue); border-color: var(--blue); }
+  .btn-ghost { color: var(--ink); border-color: var(--line); }
+  .btn-ghost:hover { border-color: var(--ink); }
+  .corner { position: absolute; width: 24px; height: 24px; opacity: .5; }
+  .corner svg { width: 100%; height: 100%; stroke: var(--blue); fill: none; stroke-width: 1.4; }
+  .corner.tl { top: 24px; left: 0; } .corner.br { bottom: 18px; right: 0; }
+
+  section { padding: 84px 0; border-bottom: 1px solid var(--line); }
+  section:last-of-type { border-bottom: none; }
+  .section-title { font-size: clamp(24px, 3.4vw, 34px); margin-bottom: 8px; }
+
+  .about-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 56px; align-items: start; margin-top: 34px; }
+  .about-body p { color: var(--ink-soft); font-size: 16px; max-width: 540px; margin: 0 0 16px; }
+  .fact-list { border-top: 1px solid var(--line); }
+  .fact { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+  .fact dt { color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; }
+  .fact dd { margin: 0; text-align: right; max-width: 60%; }
+  @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; gap: 30px; } }
+
+  .skill-groups { margin-top: 36px; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 30px 40px; }
+  .skill-group h3 { font-size: 14px; font-family: 'IBM Plex Mono', monospace; font-weight: 500; color: var(--blue); margin-bottom: 14px; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 12px; font-size: 13.5px; color: var(--ink); background: var(--card-bg); }
+
+  .proj-grid { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; }
+  .proj-card { background: var(--card-bg); border: 1px solid var(--line); border-radius: var(--radius); display: flex; flex-direction: column; overflow: hidden; }
+  .proj-media { aspect-ratio: 16/10; background: var(--paper-alt); display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .proj-media img { width: 100%; height: 100%; object-fit: cover; }
+  .proj-media svg { width: 52%; height: 52%; stroke: var(--blue); fill: none; stroke-width: 1.3; opacity: .8; }
+  .proj-body { padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .proj-index { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--blue); }
+  .proj-title { font-size: 18px; font-weight: 600; line-height: 1.3; }
+  .proj-sub { font-size: 12.5px; color: var(--ink-soft); font-style: italic; margin-top: -6px; }
+  .proj-desc { font-size: 14px; color: var(--ink-soft); flex: 1; }
+  .proj-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .proj-tags span { font-size: 11.5px; font-family: 'IBM Plex Mono', monospace; color: var(--ink-soft); border: 1px solid var(--line); border-radius: var(--radius); padding: 3px 8px; }
+  .proj-link { margin-top: 8px; font-size: 13.5px; font-weight: 500; color: var(--blue); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; width: fit-content; }
+  .proj-link .arrow { transition: transform .15s ease; }
+  .proj-link:hover .arrow { transform: translateX(3px); }
+  .proj-card.featured { grid-column: span 2; }
+  @media (max-width: 720px) { .proj-card.featured { grid-column: span 1; } }
+
+  .contact-wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 30px; margin-top: 30px; }
+  .contact-links { display: flex; flex-direction: column; gap: 10px; }
+  .contact-links a { text-decoration: none; font-size: 18px; border-bottom: 1px solid var(--line); padding-bottom: 4px; width: fit-content; transition: border-color .15s ease; }
+  .contact-links a:hover { border-color: var(--blue); color: var(--blue); }
+  footer { padding: 26px 0; font-size: 12.5px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; }
+
+  /* ---- project detail page ---- */
+  .back-link { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--blue); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 28px; }
+  .back-link:hover { text-decoration: underline; }
+  .detail-hero { padding: 64px 0 48px; }
+  .detail-hero h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.1; margin-bottom: 14px; max-width: 760px; }
+  .detail-hero .role { font-size: 15px; font-style: italic; color: var(--ink-soft); margin-bottom: 22px; }
+  .detail-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .detail-body { max-width: 720px; }
+  .detail-body p { color: var(--ink-soft); font-size: 16.5px; margin: 0 0 20px; }
+  .detail-body h3 { font-size: 18px; margin: 34px 0 14px; }
+  .detail-list { list-style: none; margin: 0 0 24px; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .detail-list li { position: relative; padding-left: 22px; color: var(--ink); font-size: 15.5px; }
+  .detail-list li::before { content: ""; position: absolute; left: 0; top: 9px; width: 8px; height: 1.4px; background: var(--blue); }
+  .detail-media { margin: 30px 0; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--paper-alt); }
+  .detail-media img { width: 100%; }
+  .detail-media-cap { font-size: 12.5px; color: var(--ink-soft); text-align: center; padding: 10px; font-style: italic; }
+  .external-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; margin-right: 10px; padding: 12px 22px; border: 1px solid var(--ink); border-radius: var(--radius); text-decoration: none; font-size: 14px; }
+  .external-link:hover { background: var(--ink); color: var(--paper); }
+  .code-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+  .notebook-embed { margin: 18px 0 34px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .notebook-label { padding: 10px 16px; background: var(--paper-alt); font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-soft); border-bottom: 1px solid var(--line); }
+  .notebook-frame { width: 100%; height: 850px; border: none; display: block; background: #ffffff; }
+  /* ---- adições para esta página ---- */
+  .detail-tags span { font-size: 12px; font-family: 'IBM Plex Mono', monospace; color: var(--ink-soft); border: 1px solid var(--line); border-radius: var(--radius); padding: 4px 10px; }
+  .flow { list-style: none; counter-reset: passo; margin: 18px 0 30px; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .flow li { counter-increment: passo; position: relative; padding: 14px 16px 14px 58px; background: var(--card-bg); border: 1px solid var(--line); border-radius: var(--radius); font-size: 15px; color: var(--ink-soft); }
+  .flow li strong { color: var(--ink); }
+  .flow li::before { content: counter(passo, decimal-leading-zero); position: absolute; left: 16px; top: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--blue); }
+  .detail-body p, .detail-list li, .flow li { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+  .note { border-left: 2px solid var(--amber); background: var(--paper-alt); padding: 14px 18px; font-size: 14.5px; color: var(--ink-soft); margin: 0 0 24px; }
+  .detail-media.small img { max-width: 560px; margin: 0 auto; background: #fff; }
+  .results { width: 100%; border-collapse: collapse; margin: 18px 0 8px; font-size: 14.5px; }
+  .results th { text-align: left; font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 12px; color: var(--ink-soft); border-bottom: 1px solid var(--ink); padding: 8px 10px 8px 0; }
+  .results td { border-bottom: 1px solid var(--line); padding: 10px 10px 10px 0; vertical-align: middle; }
+  .results tr.best td { font-weight: 600; }
+  .bar { display: flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; }
+  .bar span { display: inline-block; height: 8px; background: var(--blue); border-radius: 2px; }
+  .best-tag { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--blue); background: var(--blue-soft); padding: 2px 6px; border-radius: 2px; margin-left: 6px; font-weight: 500; }
+  details.code { margin: 18px 0 34px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card-bg); }
+  details.code summary { cursor: pointer; padding: 12px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-soft); background: var(--paper-alt); }
+  details.code pre { margin: 0; padding: 16px; max-height: 560px; overflow: auto; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.5; color: var(--ink); border-top: 1px solid var(--line); }
+  @media (max-width: 600px) { .results .bar span { display: none; } }
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-name">Matilde Reis</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#sobre">Sobre</a></li>
+      <li><a href="index.html#competencias">Competências</a></li>
+      <li><a href="index.html#projetos">Projetos</a></li>
+      <li><a href="index.html#contacto">Contacto</a></li>
+    </ul>
+  </div>
+</header>
+<section class="detail-hero">
+  <div class="wrap">
+    <a href="index.html#projetos" class="back-link">← Voltar aos projetos</a>
+    <div class="eyebrow"><span class="tick"></span>PROJETO 06</div>
+    <h1>Apoio à Decisão de Internamento de Doentes COVID-19</h1>
+    <div class="role">Projeto Académico — Universidade de Coimbra</div>
+    <div class="detail-tags"><span>Classificação</span><span>KNN</span><span>Regressão</span><span>Pré-processamento</span><span>Saúde</span><span>Python</span><span>NumPy</span></div>
+  </div>
+</section>
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="detail-body">
+
+<p><strong>Objetivo:</strong> desenvolver e comparar modelos de classificação que apoiem a decisão médica na urgência: perante um doente com suspeita de COVID-19, prever se deve <strong>ficar internado</strong> para exames complementares ou se pode <strong>ter alta</strong>.</p>
+<p>No momento da admissão, cada doente passa por uma triagem onde são registadas 8 variáveis — género, idade, estado civil, vacinação, dificuldade em respirar, ritmo cardíaco, pressão arterial e temperatura. Com base nestes dados de 600 doentes, e conhecendo a decisão final do médico, o problema foi tratado como uma tarefa de classificação supervisionada, implementada de raiz com NumPy.</p>
+
+<h3>Pré-processamento dos dados</h3>
+<ul class="detail-list">
+  <li><strong>Valores em falta:</strong> em 15 doentes não foi possível registar a pressão arterial (codificada como -1). Estes valores foram substituídos pela média dos valores válidos.</li>
+  <li><strong>Outliers:</strong> foram identificados 10 valores anómalos no ritmo cardíaco, acima de 100 batimentos por minuto em repouso (o intervalo normal em adultos é de 60 a 100). Estes valores foram substituídos pela média.</li>
+</ul>
+<div class="detail-media small"><img src="data:image/png;base64,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" alt="Gráfico de outliers do ritmo cardíaco"></div>
+<div class="detail-media-cap">Ritmo cardíaco dos 600 doentes — a vermelho, os valores anómalos identificados</div>
+
+<h3>Seleção de variáveis</h3>
+<p>Foi usado um método de filtro baseado na correlação de cada variável com a decisão de internamento. Foram selecionadas as quatro variáveis mais relevantes:</p>
+<ul class="detail-list">
+  <li><strong>Idade:</strong> o principal fator de risco de COVID-19 grave, sobretudo a partir dos 60 anos.</li>
+  <li><strong>Vacinação:</strong> os doentes não vacinados foram, na maioria, internados, enquanto os vacinados tiveram maioritariamente alta.</li>
+  <li><strong>Dificuldade em respirar:</strong> um dos sintomas mais graves e característicos da doença, presente na maioria dos doentes internados.</li>
+  <li><strong>Temperatura:</strong> a febre é um dos sintomas mais comuns.</li>
+</ul>
+<p>O género apresentava uma correlação semelhante à da dificuldade em respirar, mas foi excluído por não ter fundamento clínico para esta decisão — um exemplo de como o conhecimento do domínio deve complementar a análise estatística.</p>
+<div class="detail-media small"><img src="data:image/png;base64,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" alt="Idade e vacinação dos doentes com alta e internados"></div>
+<div class="detail-media-cap">Idade e vacinação dos doentes que tiveram alta (vermelho) e que foram internados (azul)</div>
+
+<h3>Modelos testados</h3>
+<ul class="detail-list">
+  <li><strong>Modelo regressivo:</strong> regressão linear pelo método dos mínimos quadrados, implementada a partir da fórmula matricial, com a saída arredondada para 0 (alta) ou 1 (internamento).</li>
+  <li><strong>K-vizinhos mais próximos (KNN):</strong> cada doente é classificado de acordo com a decisão tomada nos 3 doentes mais parecidos, com base na distância euclidiana.</li>
+  <li><strong>Regras individuais:</strong> modelo interpretável em que cada variável "vota" no internamento quando está acima da média, sendo a decisão final tomada por maioria.</li>
+</ul>
+
+<h3>Resultados</h3>
+<p>Os modelos foram avaliados com a <strong>sensibilidade</strong> (capacidade de identificar corretamente os doentes que devem ser internados), a <strong>especificidade</strong> (capacidade de identificar corretamente os que podem ter alta) e o <strong>F1-Score</strong>.</p>
+<table class="results">
+  <tr><th>Modelo</th><th>Sensibilidade</th><th>Especificidade</th><th>F1-Score</th></tr>
+  <tr class="best"><td>KNN (k = 3)<span class="best-tag">melhor</span></td><td><div class="bar"><span style="width:75px"></span>0,751</div></td><td><div class="bar"><span style="width:93px"></span>0,931</div></td><td><div class="bar"><span style="width:79px"></span>0,792</div></td></tr>
+  <tr><td>Modelo regressivo</td><td><div class="bar"><span style="width:60px"></span>0,601</div></td><td><div class="bar"><span style="width:88px"></span>0,875</div></td><td><div class="bar"><span style="width:64px"></span>0,644</div></td></tr>
+  <tr><td>Regras individuais</td><td><div class="bar"><span style="width:34px"></span>0,337</div></td><td><div class="bar"><span style="width:75px"></span>0,752</div></td><td><div class="bar"><span style="width:36px"></span>0,362</div></td></tr>
+</table>
+<p>O KNN obteve os melhores resultados em todas as métricas. O modelo de regras individuais, apesar de mais simples de interpretar, falhou a maioria dos doentes que deviam ser internados — num contexto clínico, uma sensibilidade baixa é particularmente grave, porque corresponde a dar alta a doentes que precisam de cuidados.</p>
+
+<h3>Aplicação em contexto real</h3>
+<p>Um modelo deste tipo poderia ser integrado no sistema de triagem da urgência como <strong>ferramenta de apoio à decisão</strong>: com base nos dados recolhidos na admissão, sugeriria a probabilidade de internamento, ajudando a priorizar doentes e a antecipar a necessidade de camas em períodos de maior afluência.</p>
+<ul class="detail-list">
+  <li><strong>Triagem mais rápida e consistente</strong> em períodos de grande pressão sobre as urgências.</li>
+  <li><strong>Sinalização de doentes de risco</strong> que podem precisar de internamento.</li>
+  <li><strong>Apoio à gestão de camas</strong>, antecipando o número provável de internamentos.</li>
+</ul>
+<p>A decisão final continuaria sempre a ser do médico, sendo o modelo uma segunda fonte de informação.</p>
+
+<h3>O que faria hoje de forma diferente</h3>
+<p>Este foi um dos meus primeiros projetos de ciência de dados. Olhando para trás, há melhorias que hoje considero essenciais:</p>
+<ul class="detail-list">
+  <li><strong>Separar dados de treino e de teste:</strong> os modelos foram avaliados nos mesmos dados usados para os construir, o que torna os resultados otimistas. Hoje usaria validação cruzada.</li>
+  <li><strong>Normalizar as variáveis antes do KNN:</strong> como o KNN usa distâncias, variáveis com escalas maiores (como a idade) pesam mais do que as binárias (como a vacinação).</li>
+  <li><strong>Tratar os valores em falta e outliers sem distorcer a média:</strong> calcular a média apenas com os valores válidos, ou usar a mediana, mais robusta a valores extremos.</li>
+  <li><strong>Usar regressão logística</strong> em vez de regressão linear para um problema de classificação binária, e ajustar o limiar de decisão para privilegiar a sensibilidade.</li>
+</ul>
+
+<h3>Código</h3>
+<details class="code">
+  <summary>🐍 meta1MatildeReis.py — pré-processamento, seleção de variáveis e modelos (NumPy)</summary>
+  <pre><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# Introdução à Engenharia e Ciência de Dados
+# --------------------------
+# Matilde Martins Reis, nº 2021237887, (DEI/FCTUC)
+# abril, 2022
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+import sys
+
+
+#---------------------------------------- 1. Aquisição de dados
+
+C = np.loadtxt(&#x27;COVID19.txt&#x27;)
+N = C.shape[0]  # 600 doentes ---&gt; numero de linhas
+M = C.shape[1] # numero de colunas 
+
+#---------------Inquerito/Triagem
+GN = C[:,0]  #genero
+ID = C[:,1]  #idade
+EC = C[:,2]  #estado civil
+V  = C[:,3]  #vacinacao
+DR = C[:,4]  #dificuldade em respirar
+
+#---------------Diapositivos/sensores
+RC = C[:,5]  #ritmo cardiaco
+PA = C[:,6]  #pressao arterial
+TP = C[:,7]  #temperatura
+
+#--------------Decisão do médico
+IT = C[:,8]  #INTERNAMENTO ou ALTA
+
+
+# correlaçao
+X = C[:,0:8] # entradas desejadas 
+Y = C[:,8] # saídas desejadas
+dias = range(0,N)
+
+#---------------------------------------- 2. Pré-Processamento de dados
+
+#-------------------------- 2.1 Valores em falta 
+
+#substituir o valor -1 da pressao arterial -----&gt; pela media 
+
+idFalta = np.where(PA==-1)   # valores invalidos -- 15 
+idValido = np.where(PA!=-1)  # valores validos 
+
+PAValido = PA[idValido]
+media = PA.mean()
+mediaInt = media.round() # media da pressao arterial dos doentes = 137
+PA[idFalta] = mediaInt  
+
+
+print(&#x27;\n::::::::: Valores em falta ----------&#x27;, PA)
+print()
+
+
+#-------------------------- 2.2 Outliers
+#substituir valores do ritmo cardiaco ---&gt; utilizei o metodo de substituicao pela media nos valores q ultrapassam um certo limite fixo
+
+limite = 100   # valor fixo
+
+
+fora = np.where(RC &gt; limite) # se o valor do ritmo cardiaco for sup ao lim --&gt; outliers
+fora = fora[0]
+
+dentro = np.where (RC &lt;= limite)
+dentro = dentro[0]
+
+
+mediaRC = RC.mean()
+RCcopy = RC.copy()
+RCcopy [fora] = mediaRC
+
+print(&#x27;Outliers&#x27;,mediaRC)
+print(fora)
+print()
+
+#GRAFICO
+plt.figure(1)
+plt.plot(dias, RC ,&#x27;ro&#x27;,RCcopy,&#x27;bo&#x27;)
+plt.title(&#x27;Outliers&#x27;)
+plt.xlabel(&#x27;Pacientes&#x27;)
+plt.ylabel(&#x27;Ritmo Cardiaco&#x27;)
+plt.grid()
+plt.show()
+
+#---------------------------------------- 3. TRANSFORMAÇAO DE DADOS
+
+#-------------------------- 3.1 Seleção de variáveis 
+# Optei por utilizar o Método de Filter (depende das carcteristicas das variaveis) onde utilizei os valores de correlação
+
+# valores de correlaçao linear ou de pearson entre duas variaveis X e Y 
+
+# entradas desejadas 
+
+# col 0 genero
+# col 1 idade  &lt;---
+# col 2 estado civil
+# col 3 vacinacao  &lt;---
+# col 4 dificuldade respirar &lt;---
+# col 5 ritmo cardiaco
+# col 6 pressao arterial
+# col 7 temperatura &lt;---
+
+
+M = X.shape[1] # numero de colunas
+tam = C.size  # 600 * 9 = 5400 , tamanho da matriz 
+dias = range(0,N)
+
+VC = np.zeros(M) # valores de correlaçao
+for i in range(0,M):
+    c = np.corrcoef(X[:,i],Y)
+    ci = c[0,1]
+    VC[i] = ci 
+    
+    
+# escolher o valor maximo em valor absoluto
+VC = np.abs(VC)    # valor absoluto 
+escolher = np.argsort(VC) # ordenar os indices 
+escolher = escolher[-4:] # escolhe as 4 variaveis finais as q teem maior correlação
+
+print(&#x27;\n:::::::::::: Metodo 2 - Uso de Correlação----------&#x27;)
+print(&#x27;Valores de correlação&#x27;,VC.round(4))
+print(&#x27;Variáveis Selecionadas:&#x27;, escolher,&#x27;Correlaçao&#x27;,VC[escolher].round(4))
+print()
+
+# escolhi a idade, vacinação, dificuldade em respirar e temperatura
+
+# ignorei o genero, pois na minha opinião é irrelevante para um medico decidir se um paciente tem covid, entao eu ignoro e como a correlação a difculdade em respirar 
+#é semelhante escolhi a dificuldade em respirar
+
+
+#---------------------- visualizar saida desejada e entrada mais correlacionada
+plt.figure(3)
+plt.title(&#x27;Valores de Correlação&#x27;)
+plt.plot(dias,Y,&#x27;r&#x27;,dias,X[:,escolher],&#x27;b&#x27;)
+plt.legend([&#x27;Output&#x27;, &#x27;Input&#x27;])
+plt.grid()
+
+
+#-------------------------- 3.2 Resumir os dados
+
+idAlta = np.where(IT == 0) # tem alta
+idInternado = np.where(IT == 1) # fica internado
+
+
+#-------media ---&gt; idade
+mediaIDA = ID[idAlta].mean().round() # media da idade dos doentes com alta
+mediaIDI = ID[idInternado].mean().round() # media da idade dos doentes internados
+
+
+print(&quot;Media da ID dos pacientes com alta:&quot;,mediaIDA)
+print(&quot;Media da ID dos pacientes internados:&quot;,mediaIDI)
+print()
+
+#-------media ---&gt; vacinação 
+mediaVA = V[idAlta].mean().round() # media dos doentes vacinados com alta
+mediaVI = V[idInternado].mean().round() # media dos doentes vacinados internados
+
+print(&quot;Media dos pacientes VC com alta:&quot;,mediaVA)
+print(&quot;Media os pacientes VC internados:&quot;,mediaVI)
+print()
+
+#-------media ---&gt; dificuldade em respirar
+mediaDRA = DR[idAlta].mean().round() # media dos doentes com dif em respirar com alta
+mediaDRI = DR[idInternado].mean().round() # media dos doentes com dif em respirar internados
+
+print(&quot;Media dos pacientes com DR com alta:&quot;,mediaDRA)
+print(&quot;Media dos pacientes com DR internados:&quot;,mediaDRI)
+print()
+
+#-------media ---&gt; temperatura
+mediaTPA = TP[idAlta].mean().round() #media da temperatura dos doentes com alta
+mediaTPI = TP[idInternado].mean().round() #media da temperatura dos doentes internados
+
+print(&quot;Media da TP dos pacientes com alta:&quot;,mediaTPA)
+print(&quot;Media da TP dos pacientes internados:&quot;,mediaTPI)
+print()
+
+
+mediaIdade     = 0.5*mediaIDA + 0.5*mediaIDI
+mediaVacinaçao = 0.5*mediaVA + 0.5*mediaVI
+mediaRespirar  = 0.5*mediaDRA + 0.5*mediaDRI
+mediaTemperatura = 0.5*mediaTPA + 0.5*mediaTPI
+
+
+print(&quot;Media ID:&quot;,mediaIdade)
+print(&quot;Media VC:&quot;,mediaVacinaçao)
+print(&quot;Media DR:&quot;,mediaRespirar)
+print(&quot;Media TP:&quot;,mediaTemperatura)
+print()
+
+
+# desvio padrao para cada variavel 
+
+desvioID = ID.std().round()
+desvioV = VC.std().round()
+desvioDR = DR.std().round()
+desvioTP = TP.std().round()
+
+print(&quot;Desvio padrao - Idade: &quot;,desvioID)
+print(&quot;Desvio padrao - Vacinação: &quot;,desvioV)
+print(&quot;Desvio padrao - Dif em Respirar: &quot;,desvioDR)
+print(&quot;Desvio padrao - Temperatura&quot;,desvioTP)
+print()
+
+
+#GRAFICO 
+plt.figure(4)
+plt.subplot(2,1,1)
+plt.plot(ID[idAlta],V[idAlta],&#x27;ro&#x27;,ID[idInternado],V[idInternado],&#x27;bo&#x27;)
+plt.legend([&quot;Tem Alta&quot;,&quot;Internado&quot;],loc=&quot;lower right&quot;)
+plt.xlabel(&#x27;Idade&#x27;)
+plt.ylabel(&#x27;Vacinados&#x27;)
+
+plt.figure(5)
+plt.subplot(2,2,4)
+plt.plot(ID[idAlta],DR[idAlta],&#x27;ro&#x27;,ID[idInternado],DR[idInternado],&#x27;bo&#x27;)
+plt.legend([&quot;Tem Alta&quot;,&quot;Internado&quot;],loc=&quot;lower right&quot;)
+plt.xlabel(&#x27;Idade&#x27;)
+plt.ylabel(&#x27;Dificuldade Respirar&#x27;)
+
+
+#-------------------------- 4.1 Modelo de Classificação
+
+#------------ 1.modelo regressivo
+
+# desenvolver os minimos quadrados   (Xt*X)^-1 * XT*y 
+
+X1 = C [:,[1,3,4,7]]         # matriz das variaveis escolhidas
+
+X1T = np.transpose(X1)       # transposta 
+X1TX = np.dot(X1T,X1)        # produto de duas matrizes 
+pInv = np.linalg.inv(X1TX)   # inversa de matrizes
+M1 = np.dot(pInv,X1T)        # produto de duas matrizes 
+PAR = np.dot(M1,Y)           # produto de duas matrizes  
+
+
+Ye2 = np.dot(X1,PAR).round() # produto das variveis escolhidas c o parametro
+
+        
+#------------ 4.2 Avaliacao usando SE = sensibilidade e SP = especificidade           
+
+# avalidacao - quantificar a qualidade do modelo de classificacao    
+
+TT = 0
+FP = 0
+TN = 0
+FN = 0
+
+for i in range(0,N):
+    if Y[i] == Ye2[i] and Y[i] ==1:
+        TT += 1
+    if Y[i] == Ye2[i] and Y[i] == 0:  
+        TN += 1
+    if Y[i] == 1 and Ye2[i] == 0:  
+        FN += 1
+    if Y[i] == 0 and Ye2[i] == 1:
+        FP += 1
+        
+SE = TT/(TT+FN)
+SP = TN/(TN+FP) 
+
+Recall = SE
+Precision = TT/(TT+FP)
+
+Fscore = 2 * (Precision * Recall) / (Precision + Recall)
+
+print(&quot;\n::::::::: MODELO REGRESSIVO ----------------&quot;)
+print(&quot;SE - Sensibilidade &gt;&quot;,round(SE,3))
+print(&quot;SP - Especificidade &gt; &quot; ,round(SP,3))  
+print(&quot;Fscore &quot;,round(Fscore,3))
+
+
+#------------ 2.metodo KNN
+
+NK = 3  # numero de vizinhos mais próximos
+varEscolhidas = C[:, [1, 3, 4, 7]]  # matriz --&gt; utilizamos todas as linhas e colunas 1,3,4,7
+YT = np.zeros(N)  # YT ---&gt; Vector de distancias, matriz c zeros -- 600 lin
+
+for i in range(0, N):
+    
+    Dist = np.zeros(N)
+    Pontoi = varEscolhidas[i,:] # ponto i --- corresponde a linha i onde o ciclo percorre todas as linhas
+    
+    for j in range(0,N):
+        
+        Pontoj = varEscolhidas[j,:]
+        Dist[j] = np.linalg.norm(Pontoi - Pontoj) # faz a norma entre o ponto i e j 
+    
+    indSort = np.argsort(Dist) # ordena os indices por ordem crescente
+    classes = IT[indSort[0:NK]]
+    classesi = classes.mean().round() # calcula a media
+    YT[i] = classesi 
+
+
+#------------ 4.2 Avaliacao usando SE = sensibilidade e SP = especificidade        
+
+# avalidacao - quantificar a qualidade do modelo de classificacao       
+
+TT = 0
+FP = 0
+TN = 0
+FN = 0
+
+for i in range(0,N):
+    if Y[i] == YT[i] and Y[i] ==1:
+        TT += 1
+    if Y[i] == YT[i] and Y[i] == 0:  
+        TN += 1
+    if Y[i] == 1 and YT[i] == 0:  
+        FN += 1
+    if Y[i] == 0 and YT[i] == 1:
+        FP += 1
+
+        
+SE = TT/(TT+FN)
+SP = TN/(TN+FP) 
+
+Recall = SE
+Precision = TT/(TT+FP)
+
+Fscore = 2 * (Precision * Recall) / (Precision + Recall)
+
+print(&quot;\n::::::::: METODO KNN ----------------&quot;)
+print(&quot;SE - Sensibilidade &gt;&quot;,round(SE,3))
+print(&quot;SP - Especificidade &gt; &quot; ,round(SP,3))  
+print(&quot;Fscore &quot;,round(Fscore,3))
+
+
+#------------ 3.modelo baseado em regras individuais
+
+mediaIdade     = 0.5*mediaIDA + 0.5*mediaIDI
+mediaVacinaçao = 0.5*mediaVA + 0.5*mediaVI
+mediaRespirar  = 0.5*mediaDRA + 0.5*mediaDRI
+mediaTemperatura = 0.5*mediaTPA + 0.5*mediaTPI
+
+# criar um modelo  ----&gt; decide se fica internado ou se tem alta
+
+ITidade = np.zeros(N)
+for i in range(0,N):
+    if ID[i] &gt; mediaIdade:
+        ITidade[i] = 1    # internado 
+  
+
+ITvacinaçao = np.zeros(N)
+for i in range(0,N):
+    if V[i] &gt; mediaVacinaçao:
+        ITvacinaçao[i] = 1   # internado 
+        
+        
+ITrespirar = np.zeros(N)
+for i in range(0,N):
+    if DR[i] &gt; mediaRespirar:
+        ITrespirar[i] = 1   # internado 
+        
+ITtemperatura = np.zeros(N)
+for i in range(0,N):
+    if TP[i] &gt; mediaTemperatura:
+        ITtemperatura[i] = 1   # internado 
+
+
+
+Ye3 = ((ITidade+ITvacinaçao+ITrespirar+ITtemperatura)/4).round()
+
+
+#------------ 4.2 Avaliacao usando SE = sensibilidade e SP = especificidade  
+
+# avalidacao - quantificar a qualidade do modelo de classificacao           
+
+TT = 0
+FP = 0
+TN = 0
+FN = 0
+
+for i in range(0,N):
+    if Y[i] == Ye3[i] and Y[i] ==1:
+        TT += 1
+    if Y[i] == Ye3[i] and Y[i] == 0:  
+        TN += 1
+    if Y[i] == 1 and Ye3[i] == 0:  
+        FN += 1
+    if Y[i] == 0 and Ye3[i] == 1:
+        FP += 1
+        
+SE = TT/(TT+FN)
+SP = TN/(TN+FP) 
+
+Recall = SE
+Precision = TT/(TT+FP)
+
+Fscore = 2 * (Precision * Recall) / (Precision + Recall)
+
+print(&quot;\n::::::::: MODELO BASEADO EM REGRAS INDIVIDUAIS ----------------&quot;)
+print(&quot;SE - Sensibilidade &gt;&quot;,round(SE,3))
+print(&quot;SP - Especificidade &gt; &quot; ,round(SP,3))
+print(&quot;Fscore &quot;,round(Fscore,3))</code></pre>
+</details>
+
+    </div>
+  </div>
+</section>
+<footer><div class="wrap">© 2026 Matilde Reis</div></footer>
+<script>
+  document.getElementById('navToggle').addEventListener('click', function() {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+  document.querySelectorAll('.nav-links a').forEach(function(a) {
+    a.addEventListener('click', function() { document.getElementById('navLinks').classList.remove('open'); });
+  });
+</script>
+</body>
+</html>
