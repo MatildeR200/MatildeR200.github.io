@@ -236,19 +236,11 @@
   <li><strong>Indicadores de gestão:</strong> o relatório de altas e internamentos por dia é a base para dashboards de ocupação e planeamento.</li>
 </ul>
 
-<h3>O que faria hoje de forma diferente</h3>
-<p>Este foi o meu primeiro contacto com bases de dados. Hoje, com mais experiência, faria algumas mudanças importantes:</p>
-<ul class="detail-list">
-  <li><strong>Normalizar a base de dados:</strong> a FICHA_UTENTE repete os dados do CARTAO_UTENTE. Hoje separaria utentes, episódios de urgência e sinais vitais em tabelas ligadas por chaves estrangeiras, permitindo vários episódios por doente.</li>
-  <li><strong>Usar consultas parametrizadas:</strong> em vez de construir as instruções SQL com formatação de texto, usaria parâmetros, o que evita erros e ataques de injeção de SQL.</li>
-  <li><strong>Calcular a idade automaticamente</strong> a partir da data de nascimento, e registar data e hora com o módulo <code>datetime</code>.</li>
-  <li><strong>Substituir os menus de texto por uma interface</strong> — por exemplo, uma aplicação web em Streamlit — e testar cada operação de forma automática.</li>
-  <li><strong>Proteger os dados pessoais:</strong> num sistema real, dados de saúde exigem controlo de acessos, registo de quem consulta cada ficha e cumprimento do RGPD.</li>
-</ul>
+
 
 <h3>Código</h3>
 <details class="code">
-  <summary>📓 ProjetoII-MatildeReis.ipynb — criação da base de dados, ETL e menus (Python, Pandas, SQLite3)</summary>
+  <summary>ProjetoII-MatildeReis.ipynb — criação da base de dados, ETL e menus (Python, Pandas, SQLite3)</summary>
   <pre><code># # Projeto II - Introdução à Engenharia e Ciência de Dados
 
 # Matilde Martins Reis, nº 2021237887, (DEI/FCTUC)
